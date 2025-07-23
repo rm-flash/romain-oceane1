@@ -1,0 +1,591 @@
+<!DOCTYPE html> 
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Romain & Océane</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #1a1a1a;
+      color: #fff;
+    }
+
+    header {
+      background-color: #2b2b2b;
+      padding: 1rem;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #f26ca7;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+
+    nav a {
+      margin: 0.3rem 0.7rem;
+      text-decoration: none;
+      color: #fff;
+      background-color: #f26ca7;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      transition: background 0.3s;
+    }
+
+    nav a:hover {
+      background-color: #d04e8c;
+    }
+
+    section {
+      padding: 2rem 1rem;
+      max-width: 900px;
+      margin: auto;
+      border-bottom: 1px solid #333;
+    }
+
+    section h2 {
+      color: #f26ca7;
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #f26ca7;
+      padding-bottom: 0.3rem;
+    }
+
+    .position-description {
+      position: absolute;
+      top: 50%;
+      left: 105%; /* à droite de la carte */
+      transform: translateY(-50%);
+      width: 220px;
+      background-color: #3a3a3a;
+      padding: 0.8rem;
+      border-radius: 10px;
+      color: #ddd;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      box-shadow: 0 0 10px rgba(0,0,0,0.7);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 10;
+    }
+
+    .position-description.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+
+    #positions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    max-width: 900px;
+    margin: auto;
+    padding: 1rem;
+  }
+
+  .position-card {
+    background-color: #2b2b2b;
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    position: relative;
+    min-height: 300px;
+  }
+
+  .position-card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 0.8rem;
+    object-fit: cover;
+  }
+
+    .status-btn {
+      padding: 0.4rem 1rem;
+      border: none;
+      border-radius: 20px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .afaire {
+      background-color: #777;
+    }
+
+    .prevu {
+      background-color: #f0ad4e;
+    }
+
+    .fait {
+      background-color: #5cb85c;
+    }
+
+    /* Styles wishlist */
+    #wishlist input {
+      padding: 0.5rem;
+      width: 70%;
+      border-radius: 8px;
+      border: none;
+    }
+    #wishlist button {
+      padding: 0.5rem 1rem;
+      background-color: #f26ca7;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      margin-left: 0.5rem;
+      cursor: pointer;
+    }
+    #listewishlist p {
+      margin-bottom: 0.5rem;
+      padding-left: 0.5rem;
+    }
+
+    @media (max-width: 600px) {
+  #positions {
+    grid-template-columns: 1fr; /* 1 carte par ligne sur mobile */
+  }
+
+  nav {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  nav a {
+    margin: 0.3rem 0;
+    width: 80%;
+    text-align: center;
+  }
+
+  .position-card {
+    min-height: auto;
+  }
+
+  .position-card img {
+    width: 100%;
+    height: auto;
+  }
+
+  .position-description {
+    position: static;
+    transform: none;
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Romain & Océane</h1>
+    <nav>
+      <a href="#positions">Positions</a>
+      <a href="#fantasmes">Fantasmes</a>
+      <a href="#jeux">Jeux coquins</a>
+      <a href="#wishlist">Wishlist</a>
+    </nav>
+  </header>
+
+  <section id="positions">
+    <h2>Positions</h2>
+
+    <div class="position-card" data-id="celui-qui-reste-a-la-maison">
+      <img src="image/celui-qui-reste-a-la-maison.jpeg" alt="celui-qui-reste-a-la-maison" onclick="toggleDescription(this)">
+      <div class="position-info">
+        <h3>Celui qui reste a la maison</h3>
+        <button class="status-btn afaire" onclick="changeStatus(this, 'celui-qui-reste-a-la-maison')">À faire</button>
+      </div>
+      <div class="position-description">
+        La position missionnaire est classique et intime, idéale pour le contact visuel et la proximité.
+      </div>
+    </div>
+
+    <div class="position-card" data-id="la-brouette-thailandaise">
+      <img src="image/la-brouette-thailandaise.jpeg" alt="la-brouette-thailandaise" onclick="toggleDescription(this)">
+      <div class="position-info">
+        <h3>La brouette thailandaise</h3>
+        <button class="status-btn afaire" onclick="changeStatus(this, 'la-brouette-thailandaise')">À faire</button>
+      </div>
+      <div class="position-description">
+        La position missionnaire est classique et intime, idéale pour le contact visuel et la proximité.
+      </div>
+    </div>
+
+    <div class="position-card" data-id="la-chaise-a-bascule">
+      <img src="image/la-chaise-a-bascule.jpeg" alt="la-chaise-a-bascule" onclick="toggleDescription(this)">
+      <div class="position-info">
+        <h3>La chaise a bascule</h3>
+        <button class="status-btn afaire" onclick="changeStatus(this, 'la-chaise-a-bascule')">À faire</button>
+      </div>
+      <div class="position-description">
+        La position missionnaire est classique et intime, idéale pour le contact visuel et la proximité.
+      </div>
+    </div>
+
+    <div class="position-card" data-id="la-chaise-longue">
+      <img src="image/la-chaise-longue.jpeg" alt="la-chaise-longue" onclick="toggleDescription(this)">
+      <div class="position-info">
+        <h3>La chaise longue</h3>
+        <button class="status-btn afaire" onclick="changeStatus(this, 'la-chaise-longue')">À faire</button>
+      </div>
+      <div class="position-description">
+        La position missionnaire est classique et intime, idéale pour le contact visuel et la proximité.
+      </div>
+    </div>
+
+    <div class="position-card" data-id="la-levrette">
+      <img src="image/la-levrette.jpeg" alt="la-levrette" onclick="toggleDescription(this)">
+      <div class="position-info">
+        <h3>La levrette</h3>
+        <button class="status-btn afaire" onclick="changeStatus(this, 'la-levrette')">À faire</button>
+      </div>
+      <div class="position-description">
+        La position missionnaire est classique et intime, idéale pour le contact visuel et la proximité.
+      </div>
+    </div>
+
+    <div class="position-card" data-id="le-bateau-ivre">
+      <img src="image/le-bateau-ivre.jpeg" alt="le-bateau-ivre" onclick="toggleDescription(this)">
+      <div class="position-info">
+        <h3>Le bateau ivre</h3>
+        <button class="status-btn afaire" onclick="changeStatus(this, 'le-bateau-ivre')">À faire</button>
+      </div>
+      <div class="position-description">
+        La position missionnaire est classique et intime, idéale pour le contact visuel et la proximité.
+      </div>
+    </div>
+
+    <div class="position-card" data-id="l-andromaque">
+      <img src="image/l-andromaque.jpeg" alt="l-andromaque" onclick="toggleDescription(this)">
+      <div class="position-info">
+        <h3>L'andromaque</h3>
+        <button class="status-btn afaire" onclick="changeStatus(this, 'l-andromaque')">À faire</button>
+      </div>
+      <div class="position-description">
+        La position missionnaire est classique et intime, idéale pour le contact visuel et la proximité.
+      </div>
+    </div>
+
+    <div class="position-card" data-id="le-69">
+      <img src="image/le-69.jpeg" alt="le-69" onclick="toggleDescription(this)">
+      <div class="position-info">
+        <h3>Le 69</h3>
+        <button class="status-btn afaire" onclick="changeStatus(this, 'le-69')">À faire</button>
+      </div>
+      <div class="position-description">
+        La position missionnaire est classique et intime, idéale pour le contact visuel et la proximité.
+      </div>
+    </div>
+
+    <div class="position-card" data-id="le-compas">
+      <img src="image/le-compas.jpeg" alt="le-compas" onclick="toggleDescription(this)">
+      <div class="position-info">
+        <h3>Le compas</h3>
+        <button class="status-btn afaire" onclick="changeStatus(this, 'le-compas')">À faire</button>
+      </div>
+      <div class="position-description">
+        La position missionnaire est classique et intime, idéale pour le contact visuel et la proximité.
+      </div>
+    </div>
+
+    <div class="position-card" data-id="le-missionnaire">
+      <img src="image/le-missionnaire.jpeg" alt="le-missionnaire" onclick="toggleDescription(this)">
+      <div class="position-info">
+        <h3>Le missionnaire</h3>
+        <button class="status-btn afaire" onclick="changeStatus(this, 'le-missionnaire')">À faire</button>
+      </div>
+      <div class="position-description">
+        La position missionnaire est classique et intime, idéale pour le contact visuel et la proximité.
+      </div>
+    </div>
+
+    <div class="position-card" data-id="le-neophyte">
+      <img src="image/le-neophyte.jpeg" alt="le-neophyte" onclick="toggleDescription(this)">
+      <div class="position-info">
+        <h3>Le neophyte</h3>
+        <button class="status-btn afaire" onclick="changeStatus(this, 'le-neophyte')">À faire</button>
+      </div>
+      <div class="position-description">
+        La position missionnaire est classique et intime, idéale pour le contact visuel et la proximité.
+      </div>
+    </div>
+
+    <div class="position-card" data-id="les-petites-cuilleres">
+      <img src="image/les-petites-cuilleres.jpeg" alt="les-petites-cuilleres" onclick="toggleDescription(this)">
+      <div class="position-info">
+        <h3>Les petites cuilleres</h3>
+        <button class="status-btn afaire" onclick="changeStatus(this, 'les-petites-cuilleres')">À faire</button>
+      </div>
+      <div class="position-description">
+        La position missionnaire est classique et intime, idéale pour le contact visuel et la proximité.
+      </div>
+    </div>
+
+    <div class="position-card" data-id="le-tendre-amant">
+      <img src="image/le-tendre-amant.jpeg" alt="le-tendre-amant" onclick="toggleDescription(this)">
+      <div class="position-info">
+        <h3>Le tendre amant</h3>
+        <button class="status-btn afaire" onclick="changeStatus(this, 'le-tendre-amant')">À faire</button>
+      </div>
+      <div class="position-description">
+        La position missionnaire est classique et intime, idéale pour le contact visuel et la proximité.
+      </div>
+    </div>
+
+    <div class="position-card" data-id="l-union-du-lotus">
+      <img src="image/l-union-du-lotus.jpeg" alt="l-union-du-lotus" onclick="toggleDescription(this)">
+      <div class="position-info">
+        <h3>L'union du lotus</h3>
+        <button class="status-btn afaire" onclick="changeStatus(this, 'l-union-du-lotus')">À faire</button>
+      </div>
+      <div class="position-description">
+        La position missionnaire est classique et intime, idéale pour le contact visuel et la proximité.
+      </div>
+    </div>
+
+    <div class="position-card" data-id="l-andromaque">
+      <img src="image/l-andromaque.jpeg" alt="l-andromaque" onclick="toggleDescription(this)">
+      <div class="position-info">
+        <h3>L'andromaque</h3>
+        <button class="status-btn afaire" onclick="changeStatus(this, 'l-andromaque')">À faire</button>
+      </div>
+      <div class="position-description">
+        La position missionnaire est classique et intime, idéale pour le contact visuel et la proximité.
+      </div>
+    </div>
+
+    <div class="position-card" data-id="le-69">
+      <img src="image/le-69.jpeg" alt="le-69" onclick="toggleDescription(this)">
+      <div class="position-info">
+        <h3>Le 69</h3>
+        <button class="status-btn afaire" onclick="changeStatus(this, 'le-69')">À faire</button>
+      </div>
+      <div class="position-description">
+        La position missionnaire est classique et intime, idéale pour le contact visuel et la proximité.
+      </div>
+    </div>
+
+    <!-- Tu peux copier-coller ce bloc pour ajouter d'autres positions -->
+  </section>
+
+  <section id="fantasmes">
+    <h2>Fantasmes</h2>
+
+    <div style="margin-bottom: 1rem;">
+      <input type="text" id="fantasmeInput" placeholder="Écris ton fantasme ici...">
+      <button onclick="ajouterFantasme()">Ajouter</button>
+    </div>
+
+    <div id="listeFantasmes"></div>
+  </section>
+
+  <section id="jeux">
+    <h2>Jeux coquins</h2>
+
+    <div style="margin-bottom: 1rem;">
+      <button onclick="tirerDefi()">🎲 Tirer un défi</button>
+    </div>
+
+    <div id="defiAffiche" style="font-size: 1.2rem; margin-top: 1rem; font-style: italic;"></div>
+  </section>
+
+  <section id="wishlist">
+    <h2>Wishlist</h2>
+    <p class="coming-soon">Ajoutez vos envies de sextoys, lingerie, etc.</p>
+
+    <div style="margin-bottom: 1rem;">
+      <input type="text" id="wishlistInput" placeholder="Écris ta wishlist ici...">
+      <button onclick="ajouterwishlist()">Ajouter</button>
+    </div>
+
+    <div id="listewishlist"></div>
+  </section>
+
+  <!-- Firebase App (core) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC7Zza7dR82OJmjDPuZYKWCAqm-ljdtCy4",
+    authDomain: "romain-oceane.firebaseapp.com",
+    projectId: "romain-oceane",
+    storageBucket: "romain-oceane.firebasestorage.app",
+    messagingSenderId: "656886108725",
+    appId: "1:656886108725:web:95aba0aea3b26e4891577c",
+    measurementId: "G-PK2K5SKH8F"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window.db = db;
+  window.firestoreRefs = { collection, addDoc, getDocs, onSnapshot, query, orderBy };
+</script>
+
+
+
+  <script>
+    const statusCycle = ["afaire", "prevu", "fait"];
+    const statusLabels = {
+      afaire: "À faire",
+      prevu: "Prévu",
+      fait: "Fait"
+    };
+
+    function changeStatus(button, id) {
+      let current = localStorage.getItem("status_" + id) || "afaire";
+      let index = statusCycle.indexOf(current);
+      let next = statusCycle[(index + 1) % statusCycle.length];
+      localStorage.setItem("status_" + id, next);
+      updateButton(button, next);
+    }
+
+    function updateButton(button, status) {
+      button.className = "status-btn " + status;
+      button.textContent = statusLabels[status];
+    }
+
+    function initStatuses() {
+      document.querySelectorAll(".position-card").forEach(card => {
+        let id = card.getAttribute("data-id");
+        let status = localStorage.getItem("status_" + id) || "afaire";
+        let button = card.querySelector(".status-btn");
+        updateButton(button, status);
+      });
+    }
+
+    function toggleDescription(imgElem) {
+  const card = imgElem.closest('.position-card');
+  const desc = card.querySelector('.position-description');
+  desc.classList.toggle('active');
+}
+
+
+    // GESTION DES FANTASMES
+
+    async function ajouterFantasme() {
+  const input = document.getElementById("fantasmeInput");
+  const texte = input.value.trim();
+
+  if (texte !== "") {
+    const { collection, addDoc } = window.firestoreRefs;
+    await addDoc(collection(window.db, "fantasmes"), {
+      texte,
+      date: new Date()
+    });
+    input.value = "";
+  }
+}
+
+async function afficherFantasmes() {
+  const container = document.getElementById("listeFantasmes");
+  container.innerHTML = "";
+
+  const { collection, onSnapshot, query, orderBy } = window.firestoreRefs;
+  const q = query(collection(window.db, "fantasmes"), orderBy("date", "desc"));
+
+  onSnapshot(q, (snapshot) => {
+    container.innerHTML = "";
+    snapshot.forEach((doc) => {
+      const p = document.createElement("p");
+      p.textContent = "• " + doc.data().texte;
+      container.appendChild(p);
+    });
+  });
+}
+
+    function afficherFantasmes() {
+      const container = document.getElementById("listeFantasmes");
+      const fantasmes = JSON.parse(localStorage.getItem("fantasmes") || "[]");
+
+      container.innerHTML = "";
+
+      fantasmes.forEach((fantasme) => {
+        const p = document.createElement("p");
+        p.textContent = `• ${fantasme}`;
+        container.appendChild(p);
+      });
+    }
+
+    // JEU COQUIN - DÉFI ALÉATOIRE
+
+    const defis = [
+      "Donne un baiser de 30 secondes… n’importe où 😘",
+      "Massage sensuel de 5 minutes à l’huile 💆",
+      "Faites l’amour sans parler pendant 5 minutes 😶",
+      "Strip-tease improvisé 💃",
+      "Chuchote un fantasme à l’oreille de l’autre 😈",
+      "Joue avec un glaçon pendant 1 minute ❄️",
+      "Attache l’autre pendant 2 minutes ⛓️",
+      "Essaye une nouvelle position de votre liste 🔥",
+      "L’un ferme les yeux pendant 3 minutes et l’autre fait ce qu’il veut 😏",
+      "Utilisez un sextoy ce soir 🎁"
+    ];
+
+    function tirerDefi() {
+      const random = defis[Math.floor(Math.random() * defis.length)];
+      document.getElementById("defiAffiche").textContent = random;
+    }
+
+    // GESTION DE LA WISHLIST
+
+    function ajouterwishlist() {
+      const input = document.getElementById("wishlistInput");
+      const texte = input.value.trim();
+
+      if (texte !== "") {
+        const wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
+        wishlist.unshift(texte);
+        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+        input.value = "";
+        afficherwishlist();
+      }
+    }
+
+    function afficherwishlist() {
+      const container = document.getElementById("listewishlist");
+      const wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
+
+      container.innerHTML = "";
+
+      wishlist.forEach((item) => {
+        const p = document.createElement("p");
+        p.textContent = `• ${item}`;
+        container.appendChild(p);
+      });
+    }
+
+    // Initialisation à l'ouverture de la page
+    window.onload = function() {
+      initStatuses();
+      afficherFantasmes();
+      afficherwishlist();
+    };
+  </script>
+
+</body>
+</html>
